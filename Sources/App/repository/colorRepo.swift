@@ -55,4 +55,19 @@ final class ColorRepository {
                 return self.db.eventLoop.makeSucceededFuture(nil)
             }
     }
+
+    func findColorIDsByRoomID(roomID: RoomID) async throws -> EventLoopFuture<[ColorID]> {
+        let sql: SQLQueryString = """
+            SELECT id
+            FROM room_colors
+            WHERE room_id = \(bind:roomID)
+            """
+
+        return db.raw(sql)
+            .all(decoding: ColorID.self)
+            .flatMapError { error in
+                print("failed to find colorIDs: \(error)")
+                return self.db.eventLoop.makeSucceededFuture([])
+            }
+    }
 }
