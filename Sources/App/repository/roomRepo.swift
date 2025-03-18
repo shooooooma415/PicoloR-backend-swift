@@ -2,6 +2,10 @@ import Vapor
 import Fluent
 import FluentPostgresDriver
 
+protocol RoomRepoProtocol {
+    func createRoomMember(user: RoomMember) async throws -> EventLoopFuture<RoomMember?>
+}
+
 final class RoomRepository {
     let db: any SQLDatabase
     

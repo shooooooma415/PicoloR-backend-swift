@@ -2,6 +2,13 @@ import Fluent
 import FluentPostgresDriver
 import Vapor
 
+protocol ColorRepoProtocol {
+    func deleteThemeColors(roomID: RoomID) async throws -> EventLoopFuture<RoomID?>
+    func findThemeColorsByRoomID(roomID: RoomID) async throws -> EventLoopFuture<[Color]>
+    func findThemeColorByColorID(colorID: ColorID) async throws -> EventLoopFuture<Color?>
+    func findColorIDsByRoomID(roomID: RoomID) async throws -> EventLoopFuture<[ColorID]>
+}
+
 final class ColorRepository {
     let db: any SQLDatabase
 
