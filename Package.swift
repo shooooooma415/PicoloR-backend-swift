@@ -1,3 +1,4 @@
+// swift-tools-version:6.0
 import PackageDescription
 
 let package = Package(
@@ -9,7 +10,6 @@ let package = Package(
         .package(url: "https://github.com/vapor/vapor.git", from: "4.110.1"),
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
         .package(url: "https://github.com/vapor/fluent.git", from: "4.0.0"),
-        .package(url: "https://github.com/vapor/fluent-<db>-driver.git", from: <version>),
         .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.0.0"),
     ],
     targets: [
@@ -17,10 +17,10 @@ let package = Package(
             name: "App",
             dependencies: [
                 .product(name: "Vapor", package: "vapor"),
+                .product(name: "Fluent", package: "fluent"),
                 .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOPosix", package: "swift-nio"),
-                .product(name: "Fluent", package: "fluent"),
-                .product(name: "Fluent<db>Driver", package: "fluent-<db>-driver"),\.product(name: "FluentPostgresDriver", package: "fluent-postgres-driver"),
+                .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver")
             ],
             swiftSettings: swiftSettings
         ),
