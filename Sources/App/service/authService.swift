@@ -10,8 +10,13 @@ final class AuthService {
         self.roomRepo = roomRepo
     }
 
-    func createUser(userName: UserName) async throws -> EventLoopFuture<User?> {
-        return try await authRepo.createUser(userName: userName)
+    func createUser(userName: UserName) async throws -> User {
+        let createdUserFuture: EventLoopFuture<User?> = try await authRepo.createUser(userName: userName)
+        let userOpt: User? = try await createdUserFuture.get()
+        guard let user = userOpt else {
+            throw NSError(domain: "AuthServiceError", code: 0, userInfo: [NSLocalizedDescriptionKey: "User creation failed"])
+        }
+        return user
     }
 
     func deleteUserByUserID(userID: UserID) async throws -> EventLoopFuture<User?> {
