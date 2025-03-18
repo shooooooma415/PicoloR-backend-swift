@@ -1,7 +1,7 @@
 import Vapor
 
 struct CORSMiddleware: Middleware {
-    func respond(to request: Request, chainingTo next: Responder) -> EventLoopFuture<Response> {
+    func respond(to request: Request, chainingTo next: any Responder) -> EventLoopFuture<Response> {
         if request.method == .OPTIONS {
             let response = Response(status: .ok)
             addCORSHeaders(to: response)

@@ -1,28 +1,27 @@
 import Vapor
 import Fluent
+import FluentPostgresDriver
 
 final class RoomRepository {
-    let db: Database
+    let db: any SQLDatabase
     
-    init(db: Database) {
+    init(db: any SQLDatabase) {
         self.db = db
     }
     
     func createRoomMember(user: RoomMember) -> EventLoopFuture<RoomMember?> {
-        let sql = """
+        let sql: SQLQueryString = """
             INSERT INTO room_members (user_id, room_id)
-            VALUES ($1, $2)
+            VALUES \(bind:user.userID), \(bind:user.roomID)
             RETURNING user_id, room_id
             """
         
         return db.raw(sql)
-            .bind(user.userID)
-            .bind(user.roomID)
             .all(decoding: RoomMember.self)
             .map { $0.first }
             .flatMapError { error in
                 print("failed to create room member: \(error)")
-                return self.db.eventLoop.makeSucceededFuture(nil)
+                return self.db.eventLoop.makeSucceededFuture(RoomMember(roomID: -1, userID: -1))
             }
     }
 }

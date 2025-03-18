@@ -1,61 +1,66 @@
 import Vapor
 import Fluent
+import SQLKit
+import FluentPostgresDriver
 
-final class AuthRepository {
-    let db: Database
+protocol AuthRepoProtocol {
+    func createUser(userName: UserName) async throws -> EventLoopFuture<User?>
+    func deleteUserByUserID(userID: UserID) async throws -> EventLoopFuture<User?>
+    func findUserByUserID(userID: UserID) async throws -> EventLoopFuture<User?>
+}
+
+final class AuthRepository: AuthRepoProtocol {
+    let db: any SQLDatabase
     
-    init(db: Database) {
+    init(db: any SQLDatabase) {
         self.db = db
     }
     
     func createUser(userName: UserName) -> EventLoopFuture<User?> {
-        let sql:String = """
+        let sql: SQLQueryString = """
             INSERT INTO users (name)
-            VALUES ($1)
+            VALUES \(bind:userName)
             RETURNING id, name
             """
         
         return db.raw(sql)
-            .bind(userName)
             .all(decoding: User.self)
             .map { $0.first }
             .flatMapError { error in
                 print("failed to create user: \(error)")
-                return self.db.eventLoop.makeSucceededFuture(nil)
+                return self.db.eventLoop.makeSucceededFuture(User(id: -1, name: "error"))
             }
     }
     
     func deleteUserByUserID(userID: UserID) -> EventLoopFuture<User?> {
-        let sql:String = """
+        let sql: SQLQueryString = """
             DELETE FROM users
-            WHERE id = $1
+            WHERE id = \(bind:userID)
             RETURNING id, name
             """
         
         return db.raw(sql)
-            .bind(userID)
             .all(decoding: User.self)
             .map { $0.first }
             .flatMapError { error in
                 print("failed to delete user: \(error)")
-                return self.db.eventLoop.makeSucceededFuture(nil)
+                return self.db.eventLoop.makeSucceededFuture(User(id: -1, name: "error"))
             }
     }
     
     func findUserByUserID(userID: UserID) -> EventLoopFuture<User?> {
-        let sql:String = """
+        let sql: SQLQueryString = """
             SELECT id, name
             FROM users
-            WHERE id = $1
+            WHERE id = \(bind:userID)
             """
         
         return db.raw(sql)
-            .bind(userID)
             .all(decoding: User.self)
             .map { $0.first }
             .flatMapError { error in
                 print("failed to find user: \(error)")
-                return self.db.eventLoop.makeSucceededFuture(nil)
+                return self.db.eventLoop.makeSucceededFuture(User(id: -1, name: "error"))
             }
     }
 }
