@@ -1,7 +1,15 @@
 import Vapor
 
 func routes(_ app: Application) throws {
-        app.get { req async in
+    let hostname = Environment.get("DATABASE_HOST") ?? "localhost"
+    let username = Environment.get("DATABASE_USERNAME") ?? "vapor"
+    let password = Environment.get("DATABASE_PASSWORD") ?? "vapor"
+    let database = Environment.get("DATABASE_NAME") ?? "vapor"
+
+    try configure(
+        app, hostname: hostname, username: username, password: password, database: database)
+
+    app.get { req async in
         "It works!"
     }
 

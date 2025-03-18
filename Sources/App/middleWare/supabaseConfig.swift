@@ -2,12 +2,9 @@ import Fluent
 import FluentPostgresDriver
 import Vapor
 
-public func configure(_ app: Application) throws {
-    let hostname = Environment.get("DATABASE_HOST") ?? "localhost"
-    let username = Environment.get("DATABASE_USERNAME") ?? "vapor"
-    let password = Environment.get("DATABASE_PASSWORD") ?? "vapor"
-    let database = Environment.get("DATABASE_NAME") ?? "vapor"
-    
+public func configure(
+    _ app: Application, hostname: String, username: String, password: String, database: String
+) throws {
     app.databases.use(
         .postgres(
             configuration: .init(
@@ -20,5 +17,4 @@ public func configure(_ app: Application) throws {
         ),
         as: .psql
     )
-    
 }
