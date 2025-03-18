@@ -20,7 +20,7 @@ final class ColorRepository {
             .all(decoding: RoomID.self)
             .map { $0.first }
             .flatMapError { error in
-                print("failed to delete user: \(error)")
+                print("failed to delete theme colors: \(error)")
                 return self.db.eventLoop.makeSucceededFuture(RoomID(-1))
             }
 
@@ -34,9 +34,25 @@ final class ColorRepository {
             return db.raw(sql)
                 .all(decoding: Color.self)
                 .flatMapError { error in
-                    print("failed to create room member: \(error)")
+                    print("failed to find theme colors: \(error)")
                     return self.db.eventLoop.makeSucceededFuture([])
                 }
         }
+    }
+
+    func findThemeColorByColorID(colorID: ColorID) async throws -> EventLoopFuture<Color?> {
+        let sql: SQLQueryString = """
+            SELECT color, id
+            FROM room_colors
+            WHERE id = \(bind:colorID)
+            """
+
+        return db.raw(sql)
+            .all(decoding: Color.self)
+            .map { $0.first }
+            .flatMapError { error in
+                print("failed to find theme color: \(error)")
+                return self.db.eventLoop.makeSucceededFuture(nil)
+            }
     }
 }
