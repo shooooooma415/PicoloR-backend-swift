@@ -6,11 +6,11 @@ let package = Package(
        .macOS(.v13)
     ],
     dependencies: [
-        // 💧 A server-side Swift web framework.
         .package(url: "https://github.com/vapor/vapor.git", from: "4.110.1"),
-        // 🔵 Non-blocking, event-driven networking for Swift. Used for custom executors
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
         .package(url: "https://github.com/vapor/postgres-nio.git", from: "1.9.0"),
+        .package(url: "https://github.com/vapor/fluent.git", from: "4.0.0"),
+        .package(url: "https://github.com/vapor/fluent-<db>-driver.git", from: <version>),
     ],
     targets: [
         .executableTarget(
@@ -20,6 +20,8 @@ let package = Package(
                 .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOPosix", package: "swift-nio"),
                 .product(name: "PostgresNIO", package: "postgres-nio"),
+                .product(name: "Fluent", package: "fluent"),
+                .product(name: "Fluent<db>Driver", package: "fluent-<db>-driver"),
             ],
             swiftSettings: swiftSettings
         ),
