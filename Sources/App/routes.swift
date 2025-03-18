@@ -1,4 +1,5 @@
 import Vapor
+import cors
 
 func routes(_ app: Application) throws {
     let hostname = Environment.get("DATABASE_HOST") ?? "localhost"
@@ -8,6 +9,8 @@ func routes(_ app: Application) throws {
 
     try configure(
         app, hostname: hostname, username: username, password: password, database: database)
+
+    try configureCORS(app)
 
     app.get { req async in
         "It works!"
