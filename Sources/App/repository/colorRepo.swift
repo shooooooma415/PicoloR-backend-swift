@@ -3,49 +3,33 @@ import FluentPostgresDriver
 import Vapor
 
 protocol ColorRepoProtocol {
-    func deleteThemeColors(roomID: RoomID) async throws -> EventLoopFuture<RoomID?>
     func findThemeColorsByRoomID(roomID: RoomID) async throws -> EventLoopFuture<[Color]>
     func findThemeColorByColorID(colorID: ColorID) async throws -> EventLoopFuture<Color?>
     func findColorIDsByRoomID(roomID: RoomID) async throws -> EventLoopFuture<[ColorID]>
 }
 
-final class ColorRepository {
+final class ColorRepository: ColorRepoProtocol {
     let db: any SQLDatabase
 
     init(db: any SQLDatabase) {
         self.db = db
     }
 
-    func deleteThemeColors(roomID: RoomID) async throws -> EventLoopFuture<RoomID?> {
+    func findThemeColorsByRoomID(roomID: RoomID) async throws -> EventLoopFuture<[Color]> {
         let sql: SQLQueryString = """
-            DELETE FROM room_colors
+            SELECT room_id, color_id
+            FROM room_colors
             WHERE room_id = \(bind:roomID)
-            RETURNING room_id
             """
 
         return db.raw(sql)
-            .all(decoding: RoomID.self)
-            .map { $0.first }
+            .all(decoding: Color.self)
             .flatMapError { error in
-                print("failed to delete theme colors: \(error)")
-                return self.db.eventLoop.makeSucceededFuture(RoomID(-1))
+                print("failed to find theme colors: \(error)")
+                return self.db.eventLoop.makeSucceededFuture([])
             }
-
-        func findThemeColorsByRoomID(roomID: RoomID) async throws -> EventLoopFuture<[Color]> {
-            let sql: SQLQueryString = """
-                SELECT room_id, color_id
-                FROM room_colors
-                WHERE room_id = \(bind:roomID)
-                """
-
-            return db.raw(sql)
-                .all(decoding: Color.self)
-                .flatMapError { error in
-                    print("failed to find theme colors: \(error)")
-                    return self.db.eventLoop.makeSucceededFuture([])
-                }
         }
-    }
+
 
     func findThemeColorByColorID(colorID: ColorID) async throws -> EventLoopFuture<Color?> {
         let sql: SQLQueryString = """
@@ -77,4 +61,5 @@ final class ColorRepository {
                 return self.db.eventLoop.makeSucceededFuture([])
             }
     }
+
 }

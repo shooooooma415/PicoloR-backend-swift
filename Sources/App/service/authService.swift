@@ -3,9 +3,9 @@ import NIOCore
 
 final class AuthService {
     private let authRepo: any AuthRepoProtocol
-    private let roomRepo: RoomRepository
+    private let roomRepo: any RoomRepoProtocol
 
-    init(authRepo: any AuthRepoProtocol, roomRepo: RoomRepository) {
+    init(authRepo: any AuthRepoProtocol, roomRepo: any RoomRepoProtocol) {
         self.authRepo = authRepo
         self.roomRepo = roomRepo
     }
