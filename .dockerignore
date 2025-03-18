@@ -1,5 +1,5 @@
-# /.build
-# /.swiftpm
-# /.vscode
-# /.git
-# .env
+/.build
+/.swiftpm
+/.vscode
+/.git
+.env
