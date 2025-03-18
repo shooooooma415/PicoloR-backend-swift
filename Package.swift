@@ -8,9 +8,9 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.110.1"),
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
-        .package(url: "https://github.com/vapor/postgres-nio.git", from: "1.9.0"),
         .package(url: "https://github.com/vapor/fluent.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/fluent-<db>-driver.git", from: <version>),
+        .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.0.0"),
     ],
     targets: [
         .executableTarget(
@@ -19,9 +19,8 @@ let package = Package(
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOPosix", package: "swift-nio"),
-                .product(name: "PostgresNIO", package: "postgres-nio"),
                 .product(name: "Fluent", package: "fluent"),
-                .product(name: "Fluent<db>Driver", package: "fluent-<db>-driver"),
+                .product(name: "Fluent<db>Driver", package: "fluent-<db>-driver"),\.product(name: "FluentPostgresDriver", package: "fluent-postgres-driver"),
             ],
             swiftSettings: swiftSettings
         ),
