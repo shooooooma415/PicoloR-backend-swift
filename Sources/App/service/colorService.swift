@@ -12,13 +12,12 @@ final class ColorService {
     }
 
     func getThemeColors(roomID: RoomID) async throws -> [Color] {
-        // roomID に紐づく ColorID の一覧を取得
-        let colorIDs: EventLoopFuture<> = try await colorRepo.findColorIDsByRoomID(roomID: roomID)
+        let colorIDsFuture: EventLoopFuture<[ColorID]> = try await colorRepo.findColorIDsByRoomID(roomID: roomID)
+        let colorIDs: [ColorID] = try await colorIDsFuture.get()
         var themeColors: [Color] = []
 
-        // 各 ColorID に対してテーマカラーを個別に取得
-        for colorID in colorIDs {
-            if let color = try await colorRepo.findThemeColorByColorID(colorID: colorID) {
+        for colorID: ColorID in colorIDs {
+            if let color: Color = try await colorRepo.findThemeColorByColorID(colorID: colorID).get() {
                 themeColors.append(color)
             }
         }
