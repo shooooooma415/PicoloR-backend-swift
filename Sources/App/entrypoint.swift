@@ -26,6 +26,7 @@ struct Entrypoint {
         let database = Environment.get("DATABASE_NAME") ?? "vapor"
         
         try configure(app, hostname: hostname, username: username, password: password, database: database)
+        try routes(app)
         try await app.execute()
     }
 }
