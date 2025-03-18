@@ -1,5 +1,5 @@
 import Vapor
-import cors
+
 
 func routes(_ app: Application) throws {
     let hostname = Environment.get("DATABASE_HOST") ?? "localhost"

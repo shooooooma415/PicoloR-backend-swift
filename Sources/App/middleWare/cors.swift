@@ -14,7 +14,7 @@ struct CORSMiddleware: Middleware {
         }
     }
     
-    private func addCORSHeaders(to response: Response) {
+    public func addCORSHeaders(to response: Response) {
         response.headers.replaceOrAdd(name: "Access-Control-Allow-Origin", value: "*")
         response.headers.replaceOrAdd(name: "Access-Control-Allow-Methods", value: "GET, POST, DELETE, PUT, OPTIONS")
         response.headers.replaceOrAdd(name: "Access-Control-Allow-Headers", value: "Content-Type, Authorization")
