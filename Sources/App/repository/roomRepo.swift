@@ -6,7 +6,7 @@ protocol RoomRepoProtocol {
     func createRoomMember(user: RoomMember) async throws -> EventLoopFuture<RoomMember?>
 }
 
-final class RoomRepository {
+final class RoomRepository: RoomRepoProtocol {
     let db: any SQLDatabase
     
     init(db: any SQLDatabase) {

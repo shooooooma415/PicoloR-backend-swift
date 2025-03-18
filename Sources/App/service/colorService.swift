@@ -2,13 +2,10 @@ import Foundation
 import NIOCore
 
 final class ColorService {
-    private let roomRepo: any RoomRepoProtocol
     private let colorRepo: any ColorRepoProtocol
 
-    init(roomRepo: any RoomRepoProtocol, colorRepo: any ColorRepoProtocol) {
+    init(colorRepo: any ColorRepoProtocol) {
         self.colorRepo = colorRepo
-        self.roomRepo = roomRepo
-
     }
 
     func getThemeColors(roomID: RoomID) async throws -> [Color] {

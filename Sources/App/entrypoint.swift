@@ -2,6 +2,7 @@ import Vapor
 import Logging
 import NIOCore
 import NIOPosix
+import FluentPostgresDriver
 
 @main
 struct Entrypoint {
@@ -26,7 +27,7 @@ struct Entrypoint {
         let database = Environment.get("DATABASE_NAME") ?? "vapor"
         
         try configure(app, hostname: hostname, username: username, password: password, database: database)
-        try routes(app)
+        try routes(app, db:app.db as! (any SQLDatabase))
         try await app.execute()
     }
 }
