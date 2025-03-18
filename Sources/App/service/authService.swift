@@ -19,8 +19,13 @@ final class AuthService {
         return user
     }
 
-    func deleteUserByUserID(userID: UserID) async throws -> EventLoopFuture<User?> {
-        return try await authRepo.deleteUserByUserID(userID: userID)
+    func deleteUserByUserID(userID: UserID) async throws -> User {
+        let deletedUserFuture: EventLoopFuture<User?> = try await authRepo.deleteUserByUserID(userID: userID)
+        let userOpt: User? = try await deletedUserFuture.get()
+        guard let user = userOpt else {
+            throw NSError(domain: "AuthServiceError", code: 0, userInfo: [NSLocalizedDescriptionKey: "User deletion failed"])
+        }
+        return user
     }
 
     func registerMember(roomMember: RoomMember) async throws -> EventLoopFuture<RoomMember?> {
