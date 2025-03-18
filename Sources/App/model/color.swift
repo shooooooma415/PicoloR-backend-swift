@@ -4,7 +4,7 @@ typealias ColorCode = String
 typealias ColorID = Int
 
 struct Color: Content {
-    let colorId: ColorID
+    let colorID: ColorID
     let colorCode: ColorCode
     let roomID: RoomID
 }

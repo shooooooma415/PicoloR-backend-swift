@@ -24,14 +24,19 @@ final class ColorRepository {
                 return self.db.eventLoop.makeSucceededFuture(RoomID(-1))
             }
 
-    func findThemeColorsByRoomID(roomID: RoomID) async throws -> EventLoopFuture<[Color]> {
-        let sql: SQLQueryString = """
-            SELECT room_id, color_id
-            FROM room_colors
-            WHERE room_id = \(bind:roomID)
-            """
+        func findThemeColorsByRoomID(roomID: RoomID) async throws -> EventLoopFuture<[Color]> {
+            let sql: SQLQueryString = """
+                SELECT room_id, color_id
+                FROM room_colors
+                WHERE room_id = \(bind:roomID)
+                """
 
-        return db.raw(sql)
-            .all(decoding: RoomColor.self)
+            return db.raw(sql)
+                .all(decoding: Color.self)
+                .flatMapError { error in
+                    print("failed to create room member: \(error)")
+                    return self.db.eventLoop.makeSucceededFuture([])
+                }
+        }
     }
 }
