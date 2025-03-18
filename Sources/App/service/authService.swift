@@ -28,7 +28,12 @@ final class AuthService {
         return user
     }
 
-    func registerMember(roomMember: RoomMember) async throws -> EventLoopFuture<RoomMember?> {
-        return try await roomRepo.createRoomMember(user: roomMember)
+    func registerMember(roomMember: RoomMember) async throws -> RoomMember {
+        let registeredMember: EventLoopFuture<RoomMember?> = try await roomRepo.createRoomMember(user: roomMember)
+        let memberOpt: RoomMember? = try await registeredMember.get()
+        guard let member = memberOpt else {
+            throw NSError(domain: "AuthServiceError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Room member registration failed"])
+        }
+        return member
     }
 }
