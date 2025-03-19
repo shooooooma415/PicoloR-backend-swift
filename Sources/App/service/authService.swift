@@ -12,7 +12,7 @@ final class AuthService {
         self.roomRepo = roomRepo
     }
 
-    func createUser(userName: UserName, db: any PostgresDatabase) async throws -> User {
+    func createUser(userName: UserName, db: any SQLDatabase) async throws -> User {
         let createdUserFuture: EventLoopFuture<User> = try await authRepo.createUser(
             userName: userName, db: db as! SQLDatabase)
         let userOpt: User? = try await createdUserFuture.get()

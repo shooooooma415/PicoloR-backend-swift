@@ -18,12 +18,16 @@ final class AuthRepository: AuthRepoProtocol {
 
     func createUser(userName: UserName, db: any SQLDatabase) -> EventLoopFuture<User> {
         let query:SQLQueryString = """
-            INSERT INTO users (name) VALUES \(userName) RETURNING id
+            INSERT INTO users (name) VALUES \(bind:userName) RETURNING id
             """
 
         let result = try db.raw(query)
             .first(decoding: User.self)
-            .unwrap(or: Abort(.notFound, reason: "指定されたIDのTodoが見つかりません"))
+            .unwrap(or: Abort(.notFound, reason: "ユーザー作成に失敗しました"))
+            .flatMapError { error in
+                print("Error during createUser: \(String(reflecting: error))")
+                return db.eventLoop.makeFailedFuture(error)
+            }
         return result
     }
 

@@ -22,7 +22,7 @@ func routes(_ app: Application) throws {
     app.post("controller", "user") { req async throws -> PostUserResponse in
         let postUserRequest = try req.content.decode(PostUserRequest.self)
         let user = UserName(postUserRequest.userName)
-        let createdUser = try await authService.createUser(userName: user, db: app.db as! (any PostgresDatabase))
+        let createdUser = try await authService.createUser(userName: user, db: req.db as! (any PostgresDatabase) as! SQLDatabase)
         return PostUserResponse(userID: createdUser.id)
     }
 
