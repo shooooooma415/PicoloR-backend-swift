@@ -19,10 +19,17 @@ func routes(_ app: Application, db:any SQLDatabase) throws {
     }
 
 
-    app.post("controller/user") { req async throws -> PostUserResponse in
+    app.post("controller", "user") { req async throws -> PostUserResponse in
         let postUserRequest = try req.content.decode(PostUserRequest.self)
         let user = UserName(postUserRequest.userName)
         let createdUser = try await authService.createUser(userName: user)
         return PostUserResponse(userID: createdUser.id)
+    }
+
+    app.post("controller", "room") { req async throws -> HTTPStatus in
+        let postMemberRequest = try req.content.decode(PostMemberRequest.self)
+        let roomMember = RoomMember(roomID: postMemberRequest.roomID, userID: postMemberRequest.userID)
+        let createdMember = try await authService.registerMember(roomMember: roomMember)
+        return .ok
     }
 }
