@@ -32,4 +32,17 @@ func routes(_ app: Application, db:any SQLDatabase) throws {
         let createdMember = try await authService.registerMember(roomMember: roomMember)
         return .ok
     }
+
+    app.delete("controller", "user") { req async throws -> HTTPStatus in
+        let deleteUserRequest = try req.content.decode(DeleteUserRequest.self)
+        let deletedUser = try await authService.deleteUserByUserID(userID: deleteUserRequest.userID)
+        return .ok
+    }
+
+    app.get("controller", "color") { req async throws -> GetColorResponse in
+        let roomID = try req.query.get(Int.self, at: "roomID")
+        let colors = try await colorService.getThemeColors(roomID: roomID)
+        let response = GetColorResponse(themeColor: colors)
+        return response
+    }
 }
