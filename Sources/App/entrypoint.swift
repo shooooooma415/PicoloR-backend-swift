@@ -30,7 +30,7 @@ struct Entrypoint {
 
         
 
-        try routes(app, db:app.db)
+        try routes(app)
         try await app.execute()
     }
 }
